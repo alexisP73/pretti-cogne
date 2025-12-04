@@ -15,3 +15,16 @@ jobs:
       - name: Validate prod overlay
         run: kustomize build overlays/prod
 
+      # Security Check 1: vuln dans images Docker
+      - name: Trivy scan Docker images
+        run: |
+          # Scanner nginx:1.23 utilisé dans le deployment
+          docker pull nginx:1.23
+          trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:1.23
+
+      # Security Check 2: secrets leak
+      - name: Detect secrets in repo
+        uses: yannickgloster/secret-scanner-action@v1
+        with:
+          scan_path: .
+          allowlist_path: .gitignore
