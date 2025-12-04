@@ -33,7 +33,4 @@ jobs:
           
       # 5️⃣ Scanner les secrets du repo avec TruffleHog
       - name: Scan repo for secrets
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: .
-
+        uses: gitleaks/gitleaks-action@v2
