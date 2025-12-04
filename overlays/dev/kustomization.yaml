@@ -2,5 +2,8 @@ resources:
   - ../../base
 
 patches:
-  - replica-patch.yaml
+  - path: replica-patch.yaml
+    target:
+      kind: Deployment
+      name: myapp
 
