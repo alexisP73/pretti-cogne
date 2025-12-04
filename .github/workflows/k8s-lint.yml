@@ -15,6 +15,13 @@ jobs:
       - name: Validate prod overlay
         run: kustomize build overlays/prod
 
+      - name: Install Trivy
+        run: |
+        # Télécharger et installer Trivy
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
+          # Vérifier l'installation
+          trivy --version
+
       # Security Check 1: vuln dans images Docker
       - name: Trivy scan Docker images
         run: |
