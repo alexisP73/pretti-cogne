@@ -2,9 +2,8 @@ name: K8s Lint
 
 on:
   push:
-    branches: [feature/*]
-  pull_request:
     branches: [master]
+  pull_request:
 
 jobs:
   validate:
