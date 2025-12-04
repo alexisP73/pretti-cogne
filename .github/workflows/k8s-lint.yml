@@ -26,7 +26,7 @@ jobs:
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
-          sudo mv trivy /usr/local/bin/   # Important : ajoute Trivy au PATH
+          #sudo mv trivy /usr/local/bin/   # Important : ajoute Trivy au PATH
           trivy --version
 
       # 4️⃣ Pull et scanner l'image Docker
