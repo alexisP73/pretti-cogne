@@ -1,0 +1,26 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: myapp
+  namespace: dev
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+  service:
+    port: 80
+    targetPort: 80
+  analysis:
+    interval: 1m
+    threshold: 100
+    iterations: 5
+    # Utilisation de requêtes HTTP pour vérifier la santé
+    webhooks:
+      - name: "healthcheck"
+        type: pre-rollout
+        url: "http://myapp.dev.svc.cluster.local/"
+      - name: "healthcheck"
+        type: rollout
+        url: "http://myapp.dev.svc.cluster.local/"
+
