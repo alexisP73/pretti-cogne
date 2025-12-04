@@ -1,38 +1,44 @@
-name: K8s Lint
+name: K8s Lint + Security Checks
 
 on:
   push:
     branches: [master]
   pull_request:
+    branches: [master]
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # pour que TruffleHog scanne tout l'historique
+
+      # 2️⃣ Lint Kustomize overlays dev/prod
       - name: Validate dev overlay
         run: kustomize build overlays/dev
+
       - name: Validate prod overlay
         run: kustomize build overlays/prod
 
+      # 3️⃣ Installer Trivy correctement
       - name: Install Trivy
         run: |
-          # Télécharger et installer Trivy
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
-          # Vérifier l'installation
+          sudo mv trivy /usr/local/bin/   # Important : ajoute Trivy au PATH
           trivy --version
 
-      # Security Check 1: vuln dans images Docker
-      - name: Trivy scan Docker images
+      # 4️⃣ Pull et scanner l'image Docker
+      - name: Trivy scan Docker image
         run: |
-          # Scanner nginx:1.23 utilisé dans le deployment
           docker pull nginx:1.23
           trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:1.23
 
-      # Security Check 2: secrets leak
+      # 5️⃣ Scanner les secrets du repo avec TruffleHog
       - name: Scan repo for secrets
         uses: trufflesecurity/trufflehog@main
         with:
-          directory: .
+          path: .
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
