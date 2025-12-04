@@ -17,7 +17,7 @@ jobs:
 
       - name: Install Trivy
         run: |
-        # Télécharger et installer Trivy
+          # Télécharger et installer Trivy
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
           # Vérifier l'installation
           trivy --version
