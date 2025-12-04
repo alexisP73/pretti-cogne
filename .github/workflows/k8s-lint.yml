@@ -22,19 +22,15 @@ jobs:
       - name: Validate prod overlay
         run: kustomize build overlays/prod
 
-      # 3️⃣ Installer Trivy correctement
-      - name: Install Trivy
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
-          #sudo mv trivy /usr/local/bin/   # Important : ajoute Trivy au PATH
-          trivy --version
-
-      # 4️⃣ Pull et scanner l'image Docker
-      - name: Trivy scan Docker image
-        run: |
-          docker pull nginx:1.23
-          trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:1.23
-
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'docker.io/nginx:1.23'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          
       # 5️⃣ Scanner les secrets du repo avec TruffleHog
       - name: Scan repo for secrets
         uses: trufflesecurity/trufflehog@main
