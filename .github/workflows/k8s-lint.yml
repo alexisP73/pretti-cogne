@@ -23,8 +23,9 @@ jobs:
           trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:1.23
 
       # Security Check 2: secrets leak
-      - name: Detect secrets in repo
-        uses: yannickgloster/secret-scanner-action@v1
+      - name: Scan repo for secrets
+        uses: trufflesecurity/trufflehog@v3
         with:
-          scan_path: .
-          allowlist_path: .gitignore
+          directory: .
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
